@@ -2,7 +2,6 @@ package images
 
 import (
 	"encoding/base64"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -10,15 +9,21 @@ import (
 	"time"
 )
 
-// LoadRandomImages lee la carpeta y devuelve N imágenes en base64
-func LoadRandomImages(folder string, n int) ([]string, error) {
-	files, err := ioutil.ReadDir(folder)
+// Imagen contiene nombre y contenido en base64
+type Imagen struct {
+	Name string
+	Data string
+}
+
+// LoadRandomImages lee la carpeta y devuelve N imágenes en base64 con su nombre
+func LoadRandomImages(folder string, n int) ([]Imagen, error) {
+	files, err := os.ReadDir(folder)
 	if err != nil {
 		return nil, err
 	}
 
 	// Filtrar solo extensiones válidas
-	validFiles := []os.FileInfo{}
+	validFiles := []os.DirEntry{}
 	for _, f := range files {
 		if !f.IsDir() && isImageFile(f.Name()) {
 			validFiles = append(validFiles, f)
@@ -40,17 +45,20 @@ func LoadRandomImages(folder string, n int) ([]string, error) {
 	}
 
 	// Convertir a Base64
-	var imagesBase64 []string
+	var images []Imagen
 	for _, file := range validFiles[:n] {
 		data, err := os.ReadFile(filepath.Join(folder, file.Name()))
 		if err != nil {
 			continue
 		}
 		encoded := base64.StdEncoding.EncodeToString(data)
-		imagesBase64 = append(imagesBase64, encoded)
+		images = append(images, Imagen{
+			Name: file.Name(),
+			Data: encoded,
+		})
 	}
 
-	return imagesBase64, nil
+	return images, nil
 }
 
 // Verifica si el archivo es .png, .jpg o .jpeg

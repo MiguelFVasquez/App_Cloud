@@ -7,12 +7,18 @@
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .custom-img {
-            width: 400px;        /* tamaño fijo */
-            height: 350px;       /* tamaño fijo */
-            object-fit: cover;   /* recorta proporcionalmente */
-            border: 2px solid black; /* borde negro */
-            margin: 10px;        /* espacio entre imágenes */
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 1rem; /* bordes redondeados */
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            border-radius: 1rem 1rem 0 0; /* redondea parte superior */
         }
         footer {
             background-color: #f8f9fa;
@@ -34,7 +40,12 @@
 
         <div class="d-flex flex-wrap justify-content-center">
             {{range .Images}}
-                <img src="data:image/png;base64,{{.}}" alt="Imagen" class="custom-img">
+            <div class="card m-3 shadow-sm" style="width: 18rem;">
+                <img src="data:image/png;base64,{{.Data}}" alt="Imagen" class="card-img-top">
+                <div class="card-body text-center">
+                    <p class="card-text fw-bold">{{.Name}}</p>
+                </div>
+            </div>
             {{end}}
         </div>
     </main>
@@ -42,7 +53,7 @@
     <!-- Footer -->
     <footer class="mt-auto">
         <div class="container d-flex justify-content-between text-muted">
-            <span>Carlos Eduardo Gomez Montoya</span>
+            <span>JuanC Albaran - AnaM Cuellar - JuanM Florez</span>
             <span>Computación en la nube</span>
             <span>2025-2</span>
         </div>
