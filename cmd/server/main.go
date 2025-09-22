@@ -6,7 +6,7 @@ import (
 	"log"               // Para registro de errores
 	"net/http"          // Para servidor HTTP
 	"os"                // Para acceder a argumentos del sistema
-	"page/internal/web" // Handlers personalizados
+	"github.com/MiguelFVasquez/App_Cloud/internal/web"
 )
 
 func main() {

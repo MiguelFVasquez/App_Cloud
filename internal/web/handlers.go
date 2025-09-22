@@ -1,38 +1,45 @@
 package web
 
-// Importa los paquetes necesarios
 import (
-	"html/template" // Para manejar plantillas HTML
-	"net/http"      // Para manejar peticiones HTTP
-	"os"            // Para obtener información del sistema
+    "html/template"
+    "net/http"
+    "os"
+
+    "github.com/MiguelFVasquez/App_Cloud/internal/images"
 )
 
 // Datos que pasamos al template
 type PageData struct {
-	Title  string   // Título de la página
-	Host   string   // Nombre del host
-	Images []string // Imágenes en base64
+    Title  string   // Título de la página
+    Host   string   // Nombre del host
+    Images []string // Lista de imágenes en base64
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	// Obtiene el nombre del host del sistema
-	host, _ := os.Hostname()
+    // Obtiene el nombre del host del sistema
+    host, _ := os.Hostname()
 
-	// Crea los datos que se pasarán al template
-	data := PageData{
-		Title:  "Servidor de imágenes", // Título mostrado en la página
-		Host:   host,                   // Host actual
-		Images: []string{},             // Lista de imágenes (vacía por ahora)
-	}
+    // Cargar 4 imágenes aleatorias
+    imgs, err := images.LoadRandomImages("images", 4)
+    if err != nil {
+        http.Error(w, "Error cargando imágenes", http.StatusInternalServerError)
+        return
+    }
 
-	// Carga el archivo de plantilla HTML
-	tmpl, err := template.ParseFiles("web/templates/index.html")
-	if err != nil {
-		// Si hay error al cargar la plantilla, responde con error 500
-		http.Error(w, "Error cargando template", http.StatusInternalServerError)
-		return
-	}
+    // Crea los datos que se pasarán al template
+    data := PageData{
+        Title:  "Servidor de imágenes",
+        Host:   host,
+        Images: imgs,
+    }
 
-	// Ejecuta la plantilla y envía la respuesta al cliente
-	tmpl.Execute(w, data)
+    // Carga el archivo de plantilla HTML
+    tmpl, err := template.ParseFiles("web/templates/index.html")
+    if err != nil {
+        http.Error(w, "Error cargando template", http.StatusInternalServerError)
+        return
+    }
+
+    // Ejecuta la plantilla y envía la respuesta al cliente
+    tmpl.Execute(w, data)
 }

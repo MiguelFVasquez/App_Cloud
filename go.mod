@@ -1,3 +1,3 @@
-module page
+module github.com/MiguelFVasquez/App_Cloud
 
-go 1.25.1
+go 1.25
