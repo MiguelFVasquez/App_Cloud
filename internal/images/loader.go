@@ -9,20 +9,17 @@ import (
 	"time"
 )
 
-// Imagen contiene nombre y contenido en base64
 type Imagen struct {
 	Name string
 	Data string
 }
 
-// LoadRandomImages lee la carpeta y devuelve N imágenes en base64 con su nombre
 func LoadRandomImages(folder string, n int) ([]Imagen, error) {
 	files, err := os.ReadDir(folder)
 	if err != nil {
 		return nil, err
 	}
 
-	// Filtrar solo extensiones válidas
 	validFiles := []os.DirEntry{}
 	for _, f := range files {
 		if !f.IsDir() && isImageFile(f.Name()) {
@@ -31,10 +28,9 @@ func LoadRandomImages(folder string, n int) ([]Imagen, error) {
 	}
 
 	if len(validFiles) == 0 {
-		return nil, nil // No hay imágenes
+		return nil, nil 
 	}
 
-	// Barajar (shuffle) y seleccionar máximo N
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(validFiles), func(i, j int) {
 		validFiles[i], validFiles[j] = validFiles[j], validFiles[i]
@@ -44,7 +40,6 @@ func LoadRandomImages(folder string, n int) ([]Imagen, error) {
 		n = len(validFiles)
 	}
 
-	// Convertir a Base64
 	var images []Imagen
 	for _, file := range validFiles[:n] {
 		data, err := os.ReadFile(filepath.Join(folder, file.Name()))
@@ -61,7 +56,6 @@ func LoadRandomImages(folder string, n int) ([]Imagen, error) {
 	return images, nil
 }
 
-// Verifica si el archivo es .png, .jpg o .jpeg
 func isImageFile(name string) bool {
 	ext := strings.ToLower(filepath.Ext(name))
 	return ext == ".png" || ext == ".jpg" || ext == ".jpeg"
